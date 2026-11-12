@@ -1,0 +1,199 @@
+{% extends "public/base.html" %}
+
+{% block structured_data %}
+<script type="application/ld+json">{{ webpage_ld }}</script>
+{% endblock %}
+
+{% block content %}
+
+{# ---------- Hero ---------- #}
+<section class="mx-auto max-w-2xl px-4 pt-14 pb-10 text-center sm:px-6">
+    <h1 class="text-4xl font-bold tracking-tight text-slate-900 dark:text-white">About the Publication</h1>
+    <p class="mt-4 text-lg text-slate-600 dark:text-slate-300">
+        Practical knowledge for people building with Python, Django and the web.
+    </p>
+    <p class="mt-4 text-slate-500 dark:text-slate-400">
+        This publication exists to make software development concepts easier to understand, easier to apply, and
+        easier to revisit.
+    </p>
+</section>
+
+{# ---------- Our Purpose ---------- #}
+<section class="border-t border-slate-100 dark:border-slate-800">
+    <div class="mx-auto max-w-2xl px-4 py-14 sm:px-6">
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Our Purpose</h2>
+        <p class="mt-4 text-slate-600 dark:text-slate-300">
+            Software development is full of documentation, tutorials and opinions, but finding explanations that are
+            both practical and easy to revisit can still be difficult.
+        </p>
+        <p class="mt-4 text-slate-600 dark:text-slate-300">
+            We created this publication as a growing knowledge base for developers who want to understand not only
+            how something works, but why it works and when it should be used.
+        </p>
+    </div>
+</section>
+
+{# ---------- What We Write About ---------- #}
+<section class="border-t border-slate-100 bg-slate-50/60 dark:border-slate-800 dark:bg-slate-900/40">
+    <div class="mx-auto max-w-3xl px-4 py-14 sm:px-6">
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">What We Write About</h2>
+        <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div class="card p-5">
+                <p class="font-semibold text-slate-900 dark:text-white">Python</p>
+                <p class="mt-1.5 text-sm text-slate-500 dark:text-slate-400">From language fundamentals and clean code to practical programming patterns.</p>
+            </div>
+            <div class="card p-5">
+                <p class="font-semibold text-slate-900 dark:text-white">Django</p>
+                <p class="mt-1.5 text-sm text-slate-500 dark:text-slate-400">Building web applications, APIs, authentication, databases and production-ready systems.</p>
+            </div>
+            <div class="card p-5">
+                <p class="font-semibold text-slate-900 dark:text-white">Web Development</p>
+                <p class="mt-1.5 text-sm text-slate-500 dark:text-slate-400">Modern approaches to building fast, accessible and maintainable websites.</p>
+            </div>
+            <div class="card p-5">
+                <p class="font-semibold text-slate-900 dark:text-white">Backend Engineering</p>
+                <p class="mt-1.5 text-sm text-slate-500 dark:text-slate-400">Architecture, APIs, databases, caching, background tasks and scalable application design.</p>
+            </div>
+            <div class="card p-5">
+                <p class="font-semibold text-slate-900 dark:text-white">DevOps &amp; Deployment</p>
+                <p class="mt-1.5 text-sm text-slate-500 dark:text-slate-400">Servers, deployment, monitoring, performance and keeping applications reliable in production.</p>
+            </div>
+            <div class="card p-5">
+                <p class="font-semibold text-slate-900 dark:text-white">Security</p>
+                <p class="mt-1.5 text-sm text-slate-500 dark:text-slate-400">Practical security principles for web applications and backend systems.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ---------- Editorial Approach ---------- #}
+<section class="border-t border-slate-100 dark:border-slate-800">
+    <div class="mx-auto max-w-2xl px-4 py-14 sm:px-6">
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">How We Approach Content</h2>
+        <div class="mt-6 space-y-6">
+            <div class="flex gap-4">
+                <span class="text-lg font-bold text-slate-300 dark:text-slate-700">01</span>
+                <div>
+                    <p class="font-semibold text-slate-900 dark:text-white">Clarity</p>
+                    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Complex concepts should be explained in a way that makes sense before introducing unnecessary complexity.</p>
+                </div>
+            </div>
+            <div class="flex gap-4">
+                <span class="text-lg font-bold text-slate-300 dark:text-slate-700">02</span>
+                <div>
+                    <p class="font-semibold text-slate-900 dark:text-white">Practicality</p>
+                    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Examples should reflect problems developers actually encounter while building software.</p>
+                </div>
+            </div>
+            <div class="flex gap-4">
+                <span class="text-lg font-bold text-slate-300 dark:text-slate-700">03</span>
+                <div>
+                    <p class="font-semibold text-slate-900 dark:text-white">Depth</p>
+                    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Short answers are useful, but understanding the reasoning behind a solution is even more valuable.</p>
+                </div>
+            </div>
+            <div class="flex gap-4">
+                <span class="text-lg font-bold text-slate-300 dark:text-slate-700">04</span>
+                <div>
+                    <p class="font-semibold text-slate-900 dark:text-white">Maintainability</p>
+                    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Good software is not only code that works today. It should remain understandable and maintainable tomorrow.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ---------- Who Is This For ---------- #}
+<section class="border-t border-slate-100 bg-slate-50/60 dark:border-slate-800 dark:bg-slate-900/40">
+    <div class="mx-auto max-w-3xl px-4 py-14 sm:px-6">
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Who Is This For?</h2>
+        <p class="mt-1 text-slate-500 dark:text-slate-400">This publication is designed for developers at different stages of their journey.</p>
+        <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div class="card p-5">
+                <p class="font-semibold text-slate-900 dark:text-white">Beginners</p>
+                <p class="mt-1.5 text-sm text-slate-500 dark:text-slate-400">Develop a strong foundation and understand the concepts behind the code.</p>
+            </div>
+            <div class="card p-5">
+                <p class="font-semibold text-slate-900 dark:text-white">Intermediate Developers</p>
+                <p class="mt-1.5 text-sm text-slate-500 dark:text-slate-400">Improve architecture, debugging, performance and development practices.</p>
+            </div>
+            <div class="card p-5">
+                <p class="font-semibold text-slate-900 dark:text-white">Experienced Developers</p>
+                <p class="mt-1.5 text-sm text-slate-500 dark:text-slate-400">Explore patterns, trade-offs, implementation ideas and practical engineering lessons.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ---------- More Than Just Tutorials ---------- #}
+<section class="border-t border-slate-100 dark:border-slate-800">
+    <div class="mx-auto max-w-2xl px-4 py-14 sm:px-6">
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">More Than Just Tutorials</h2>
+        <p class="mt-4 text-slate-600 dark:text-slate-300">
+            We do not want the website to become a collection of disconnected code snippets.
+        </p>
+        <p class="mt-4 text-slate-600 dark:text-slate-300">
+            Articles should build a connected body of knowledge where readers can move from fundamentals to more
+            advanced concepts.
+        </p>
+        <p class="mt-4 text-slate-600 dark:text-slate-300">
+            Whenever possible, content should explain the problem, the reasoning, the implementation, the
+            trade-offs and the practical lessons.
+        </p>
+    </div>
+</section>
+
+{# ---------- Content Philosophy ---------- #}
+<section class="border-t border-slate-100 bg-slate-50/60 dark:border-slate-800 dark:bg-slate-900/40">
+    <div class="mx-auto max-w-3xl px-4 py-14 sm:px-6">
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Learn &rarr; Build &rarr; Understand &rarr; Improve</h2>
+        <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-4">
+            <div>
+                <p class="font-semibold text-slate-900 dark:text-white">Learn</p>
+                <p class="mt-1.5 text-sm text-slate-500 dark:text-slate-400">Understand the fundamentals.</p>
+            </div>
+            <div>
+                <p class="font-semibold text-slate-900 dark:text-white">Build</p>
+                <p class="mt-1.5 text-sm text-slate-500 dark:text-slate-400">Apply the idea in a real project.</p>
+            </div>
+            <div>
+                <p class="font-semibold text-slate-900 dark:text-white">Understand</p>
+                <p class="mt-1.5 text-sm text-slate-500 dark:text-slate-400">Learn why the implementation works.</p>
+            </div>
+            <div>
+                <p class="font-semibold text-slate-900 dark:text-white">Improve</p>
+                <p class="mt-1.5 text-sm text-slate-500 dark:text-slate-400">Refactor, optimize and make it production-ready.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ---------- Future Vision ---------- #}
+<section class="border-t border-slate-100 dark:border-slate-800">
+    <div class="mx-auto max-w-2xl px-4 py-14 sm:px-6">
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Where We're Going</h2>
+        <p class="mt-4 text-slate-600 dark:text-slate-300">
+            The publication is designed to grow over time into a structured technical knowledge base covering
+            Python, Django, backend engineering, databases, APIs, deployment, security and modern web development.
+        </p>
+        <p class="mt-4 text-slate-600 dark:text-slate-300">
+            As the library grows, older articles will continue to be improved, connected and organized so the site
+            becomes more useful over time — not simply larger.
+        </p>
+    </div>
+</section>
+
+{# ---------- CTA ---------- #}
+<section class="border-t border-slate-100 bg-slate-50/60 dark:border-slate-800 dark:bg-slate-900/40">
+    <div class="mx-auto max-w-xl px-4 py-16 text-center sm:px-6">
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Ready to Explore?</h2>
+        <p class="mt-2 text-slate-500 dark:text-slate-400">
+            Start with the latest articles or browse by topic and find something useful for your next project.
+        </p>
+        <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+            <a href="{% url 'public:blog-list' %}" class="btn-primary">Explore Latest Articles</a>
+            <a href="{% url 'public:home' %}#topics" class="btn-secondary">Browse Topics</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

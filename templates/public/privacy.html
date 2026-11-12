@@ -1,0 +1,46 @@
+{% extends "public/base.html" %}
+
+{% block content %}
+<article class="mx-auto max-w-2xl px-4 py-14 sm:px-6">
+    <h1 class="text-3xl font-bold text-slate-900 dark:text-white">Privacy Policy</h1>
+    <p class="mt-2 text-sm text-slate-400">Last updated {{ current_year }}</p>
+
+    <div class="prose prose-slate mt-8 max-w-none dark:prose-invert">
+        <p>
+            This page explains what information {{ SITE_NAME }} collects, why, and how it's
+            used. This is a foundational policy — as features like comments, accounts, and
+            analytics are added, this page will be updated to reflect them.
+        </p>
+
+        <h2>Information we collect</h2>
+        <ul>
+            <li><strong>Contact form submissions:</strong> your name, email address, and message, so we can reply to you.</li>
+            <li><strong>Basic technical logs:</strong> IP address and timestamps for security and abuse prevention (e.g. rate limiting).</li>
+            <li><strong>Session cookies:</strong> used to keep the site functional (e.g. not double-counting your view of an article) — not for cross-site tracking or advertising.</li>
+        </ul>
+
+        <h2>What we don't do</h2>
+        <ul>
+            <li>We don't sell or share your personal information with third parties for marketing.</li>
+            <li>We don't run third-party advertising trackers on this site.</li>
+        </ul>
+
+        <h2>Data retention</h2>
+        <p>
+            Contact form messages are kept as long as needed to respond and maintain a
+            reasonable record, and can be deleted on request.
+        </p>
+
+        <h2>Your rights</h2>
+        <p>
+            You can request access to, correction of, or deletion of your personal data by
+            <a href="{% url 'public:contact' %}">contacting us</a>.
+        </p>
+
+        <h2>Changes to this policy</h2>
+        <p>
+            We'll update this page if what we collect or how we use it changes materially.
+        </p>
+    </div>
+</article>
+{% endblock %}

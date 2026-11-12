@@ -1,0 +1,176 @@
+{% extends "public/base.html" %}
+{% load public_extras %}
+{% block breadcrumbs %}{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">{{ website_ld }}</script>
+{% endblock %}
+
+{% block content %}
+
+{# ---------- Hero ---------- #}
+<section class="mx-auto max-w-3xl px-4 pt-16 pb-10 text-center sm:px-6 sm:pt-24">
+    <p class="text-sm font-semibold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">Python &amp; Django</p>
+    <h1 class="mt-4 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl dark:text-white">
+        Practical Python, Django &amp; Web Development
+    </h1>
+    <p class="mx-auto mt-5 max-w-2xl text-lg text-slate-600 dark:text-slate-300">
+        Clear, practical articles for developers who want to build better web applications, understand modern
+        backend development, and improve their Python and Django skills.
+    </p>
+
+    <div class="mt-6 flex flex-wrap items-center justify-center gap-2">
+        <span class="badge-slate">Python</span>
+        <span class="badge-slate">Django</span>
+        <span class="badge-slate">Web Development</span>
+        <span class="badge-slate">Backend</span>
+        <span class="badge-slate">Programming</span>
+    </div>
+
+    <div class="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
+        <a href="{% url 'public:blog-list' %}" class="btn-primary">Explore the Blog <span aria-hidden="true">&rarr;</span></a>
+        <a href="{% url 'public:about' %}" class="text-sm font-medium text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400">
+            About the Publication <span aria-hidden="true">&rarr;</span>
+        </a>
+    </div>
+</section>
+
+{# ---------- Editorial statement ---------- #}
+<section class="border-y border-slate-100 bg-slate-50/60 dark:border-slate-800 dark:bg-slate-900/40">
+    <div class="mx-auto max-w-2xl px-4 py-10 text-center sm:px-6">
+        <p class="text-xl font-semibold text-slate-900 dark:text-white">
+            Learn by building. Understand the fundamentals. Write better software.
+        </p>
+        <p class="mt-3 text-slate-600 dark:text-slate-400">
+            {{ SITE_NAME }} exists to make software development concepts easier to understand, easier to apply, and
+            easier to revisit — practical writing over recycled tutorials.
+        </p>
+    </div>
+</section>
+
+{# ---------- Latest Articles ---------- #}
+<section class="mx-auto max-w-3xl px-4 py-14 sm:px-6">
+    <div class="flex flex-wrap items-baseline justify-between gap-2">
+        <div>
+            <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Latest from the Blog</h2>
+            <p class="mt-1 text-slate-500 dark:text-slate-400">
+                Fresh tutorials, practical guides, development notes, and ideas for Python and modern web development.
+            </p>
+        </div>
+        <a href="{% url 'public:blog-list' %}" class="shrink-0 text-sm font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">View all &rarr;</a>
+    </div>
+
+    {% if latest_posts %}
+    <div class="mt-6">
+        {% for post in latest_posts %}
+        {% include "public/partials/post_card.html" %}
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="mt-6 text-slate-500 dark:text-slate-400">No articles published yet — check back soon.</p>
+    {% endif %}
+</section>
+
+{# ---------- Start Here ---------- #}
+{% if featured_posts %}
+<section class="border-t border-slate-100 dark:border-slate-800">
+    <div class="mx-auto max-w-3xl px-4 py-14 sm:px-6">
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Start Here</h2>
+        <p class="mt-1 text-slate-500 dark:text-slate-400">
+            New to Python or Django? Begin with these carefully selected guides and build your knowledge step by step.
+        </p>
+        <div class="mt-6">
+            {% for post in featured_posts %}
+            {% include "public/partials/post_card.html" %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ---------- Explore Topics ---------- #}
+{% if topics %}
+<section id="topics" class="border-t border-slate-100 bg-slate-50/60 dark:border-slate-800 dark:bg-slate-900/40">
+    <div class="mx-auto max-w-3xl px-4 py-14 sm:px-6">
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Explore Topics</h2>
+        <p class="mt-1 text-slate-500 dark:text-slate-400">Browse the topics covered across the publication.</p>
+
+        <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {% for topic in topics %}
+            <a href="{% url 'public:category-detail' topic.slug %}" class="card block p-5 transition-colors hover:border-indigo-300 dark:hover:border-indigo-700">
+                <div class="flex items-center justify-between">
+                    <p class="font-semibold text-slate-900 dark:text-white">{{ topic.name }}</p>
+                    <span class="text-xs text-slate-400">{{ topic.published_count }} article{{ topic.published_count|pluralize }}</span>
+                </div>
+                <p class="mt-1.5 text-sm text-slate-500 dark:text-slate-400">{{ topic.blurb }}</p>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ---------- Popular Articles ---------- #}
+{% if popular_posts %}
+<section id="popular" class="border-t border-slate-100 dark:border-slate-800">
+    <div class="mx-auto max-w-3xl px-4 py-14 sm:px-6">
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Popular Articles</h2>
+        <p class="mt-1 text-slate-500 dark:text-slate-400">Articles readers are spending the most time with.</p>
+        <ol class="mt-6 divide-y divide-slate-200 dark:divide-slate-800">
+            {% for post in popular_posts %}
+            <li class="flex items-start gap-4 py-4">
+                <span class="mt-0.5 text-xl font-bold text-slate-300 dark:text-slate-700">{{ forloop.counter }}</span>
+                <div class="min-w-0">
+                    <a href="{{ post.get_absolute_url }}" class="font-semibold text-slate-900 hover:text-indigo-600 dark:text-white dark:hover:text-indigo-400">{{ post.title }}</a>
+                    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                        {% if post.category %}{{ post.category.name }} &middot; {% endif %}{{ post.reading_time }} min read
+                    </p>
+                </div>
+            </li>
+            {% endfor %}
+        </ol>
+    </div>
+</section>
+{% endif %}
+
+{# ---------- Built for Curious Developers ---------- #}
+<section class="border-t border-slate-100 bg-slate-50/60 dark:border-slate-800 dark:bg-slate-900/40">
+    <div class="mx-auto max-w-2xl px-4 py-16 text-center sm:px-6">
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Built for Curious Developers</h2>
+        <p class="mt-4 text-slate-600 dark:text-slate-300">
+            Programming becomes easier when complex ideas are explained clearly. This publication focuses on
+            practical knowledge, real development problems, useful patterns, and lessons that developers can apply
+            to their own projects.
+        </p>
+        <p class="mt-4 text-slate-600 dark:text-slate-300">
+            Every article aims to answer a practical question, explain the underlying idea, and leave you with
+            something you can actually use.
+        </p>
+    </div>
+</section>
+
+{# ---------- About the Publication ---------- #}
+<section class="border-t border-slate-100 dark:border-slate-800">
+    <div class="mx-auto max-w-2xl px-4 py-16 sm:px-6">
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">About This Publication</h2>
+        <p class="mt-4 text-slate-600 dark:text-slate-300">
+            This is an independent technical publication focused on Python, Django, backend development and the
+            practical side of building software for the web.
+        </p>
+        <p class="mt-4 text-slate-600 dark:text-slate-300">
+            The goal is simple: explain useful ideas clearly, document real development lessons, and create a
+            growing reference that developers can return to.
+        </p>
+        <a href="{% url 'public:about' %}" class="mt-6 inline-flex items-center gap-1 text-sm font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
+            Read About <span aria-hidden="true">&rarr;</span>
+        </a>
+    </div>
+</section>
+
+{# ---------- Newsletter ---------- #}
+<section class="border-t border-slate-100 dark:border-slate-800">
+    <div class="mx-auto max-w-xl px-4 py-16 sm:px-6">
+        {% include "public/partials/newsletter.html" %}
+    </div>
+</section>
+{% endblock %}

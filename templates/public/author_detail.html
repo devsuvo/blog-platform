@@ -1,0 +1,29 @@
+{% extends "public/base.html" %}
+
+{% block content %}
+<section class="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+    <div class="flex items-center gap-4">
+        {% if author.avatar %}
+            <img src="{{ author.avatar.url }}" alt="" class="h-16 w-16 rounded-full object-cover">
+        {% else %}
+            <span class="flex h-16 w-16 items-center justify-center rounded-full bg-indigo-100 text-2xl font-semibold text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300">
+                {{ author.get_full_name|default:author.username|slice:":1"|upper }}
+            </span>
+        {% endif %}
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900 dark:text-white">{{ author.get_full_name|default:author.username }}</h1>
+            <p class="text-sm text-slate-400">{{ page_obj.paginator.count }} published article{{ page_obj.paginator.count|pluralize }}</p>
+        </div>
+    </div>
+    {% if author.bio %}
+    <p class="mt-4 max-w-2xl text-slate-600 dark:text-slate-300">{{ author.bio }}</p>
+    {% endif %}
+
+    <div class="mt-8 border-t border-slate-100 pt-6 dark:border-slate-800">
+        {% for post in page_obj.object_list %}
+        {% include "public/partials/post_card.html" %}
+        {% endfor %}
+    </div>
+    {% include "public/partials/pagination.html" %}
+</section>
+{% endblock %}

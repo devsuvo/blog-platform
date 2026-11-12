@@ -1,0 +1,66 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<div class="card mb-4 p-4">
+    <form method="get" class="flex flex-wrap items-end gap-3">
+        <div>
+            <label for="action" class="field-label">Action</label>
+            <select id="action" name="action" class="field-input">
+                <option value="">All actions</option>
+                {% for value, label in action_choices %}
+                <option value="{{ value }}" {% if value == selected_action %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="from" class="field-label">From</label>
+            <input type="date" id="from" name="from" value="{{ date_from }}" class="field-input">
+        </div>
+        <div>
+            <label for="to" class="field-label">To</label>
+            <input type="date" id="to" name="to" value="{{ date_to }}" class="field-input">
+        </div>
+        <button type="submit" class="btn-secondary">Filter</button>
+        {% if selected_action or date_from or date_to %}
+        <a href="{% url 'dashboard:activity-log-list' %}" class="btn-ghost">Clear</a>
+        {% endif %}
+    </form>
+</div>
+
+{% if page_obj.object_list %}
+<div class="card overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="w-full divide-y divide-slate-200 dark:divide-slate-800">
+            <thead class="bg-slate-50 dark:bg-slate-800/50">
+                <tr>
+                    <th class="table-header-cell">User</th>
+                    <th class="table-header-cell">Action</th>
+                    <th class="table-header-cell">Details</th>
+                    <th class="table-header-cell">IP</th>
+                    <th class="table-header-cell">Date</th>
+                    <th class="table-header-cell text-right">&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                {% for log in page_obj.object_list %}
+                <tr>
+                    <td class="table-cell font-medium text-slate-900 dark:text-white">{{ log.actor|default:"System" }}</td>
+                    <td class="table-cell"><span class="badge-slate">{{ log.get_action_display }}</span></td>
+                    <td class="table-cell max-w-xs truncate">{{ log.description|default:"—" }}</td>
+                    <td class="table-cell text-slate-500 dark:text-slate-400">{{ log.ip_address|default:"—" }}</td>
+                    <td class="table-cell text-slate-500 dark:text-slate-400">{{ log.created_at|date:"d M Y H:i" }}</td>
+                    <td class="table-cell text-right">
+                        <a href="{% url 'dashboard:activity-log-detail' log.pk %}" class="text-sm font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">Details</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="px-1">
+    {% include "admin_panel/partials/pagination.html" %}
+</div>
+{% else %}
+{% include "admin_panel/partials/empty_state.html" with title="No activity yet" description="Actions taken across the admin panel will show up here." %}
+{% endif %}
+{% endblock %}

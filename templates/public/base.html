@@ -1,0 +1,49 @@
+{% load static public_extras %}<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}{{ seo_title|default:SITE_NAME }}{% endblock %}</title>
+    {% block meta_description %}<meta name="description" content="{{ seo_description|default:SITE_DESCRIPTION }}">{% endblock %}
+    {% block robots %}<meta name="robots" content="{{ robots|default:'index, follow' }}">{% endblock %}
+    {% block canonical %}<link rel="canonical" href="{{ canonical|default:request.build_absolute_uri }}">{% endblock %}
+
+    {% block og_tags %}
+    <meta property="og:site_name" content="{{ og.site_name|default:SITE_NAME }}">
+    <meta property="og:type" content="{{ og.type|default:"website" }}">
+    <meta property="og:title" content="{{ og.title|default:seo_title|default:SITE_NAME }}">
+    <meta property="og:description" content="{{ og.description|default:seo_description|default:SITE_DESCRIPTION }}">
+    <meta property="og:url" content="{{ og.url|default:canonical }}">
+    {% endblock %}
+    {% block twitter_tags %}
+    <meta name="twitter:card" content="{{ twitter.card|default:"summary" }}">
+    <meta name="twitter:title" content="{{ twitter.title|default:seo_title|default:SITE_NAME }}">
+    <meta name="twitter:description" content="{{ twitter.description|default:seo_description|default:SITE_DESCRIPTION }}">
+    {% if twitter.site %}<meta name="twitter:site" content="{{ twitter.site }}">{% endif %}
+    {% endblock %}
+
+    <link rel="alternate" type="application/rss+xml" title="{{ SITE_NAME }} RSS Feed" href="{% url 'public:feed' %}">
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+    {% block extra_head %}{% endblock %}
+    {% block structured_data %}{% endblock %}
+
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    {% include "partials/dark_mode_init.html" %}
+</head>
+<body class="flex min-h-screen flex-col bg-white text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
+
+{% include "public/partials/header.html" %}
+{% include "admin_panel/partials/messages.html" %}
+
+<main class="flex-1">
+    {% block breadcrumbs %}{% include "public/partials/breadcrumbs.html" %}{% endblock %}
+    {% block content %}{% endblock %}
+</main>
+
+{% include "public/partials/footer.html" %}
+
+{% block extra_scripts %}{% endblock %}
+<script src="{% static 'js/public-site.js' %}"></script>
+</body>
+</html>

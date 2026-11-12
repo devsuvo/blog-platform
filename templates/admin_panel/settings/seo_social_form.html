@@ -1,0 +1,43 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<div class="grid grid-cols-1 gap-6 lg:grid-cols-4">
+    <nav class="lg:col-span-1" aria-label="Settings sections">
+        <ul class="space-y-1">
+            {% for key, label in sections.items %}
+            <li>
+                <a href="{% url 'dashboard:settings-section' key %}"
+                   class="{% if key == active_section %}sidebar-link-active{% else %}sidebar-link{% endif %} block">
+                    {{ label }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </nav>
+
+    <div class="lg:col-span-3">
+        <div class="card p-6">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                <div class="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-700 dark:bg-red-500/10 dark:text-red-400">{{ form.non_field_errors }}</div>
+                {% endif %}
+
+                <div class="space-y-4">
+                    {% for field in form %}
+                    <div>
+                        <label for="{{ field.id_for_label }}" class="field-label">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}<p class="field-help">{{ field.help_text }}</p>{% endif %}
+                        {% if field.errors %}<p class="field-error">{{ field.errors|join:" " }}</p>{% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="mt-6 flex justify-end border-t border-slate-100 pt-4 dark:border-slate-800">
+                    <button type="submit" class="btn-primary">Save Settings</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

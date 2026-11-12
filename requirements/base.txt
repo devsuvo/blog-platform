@@ -1,0 +1,26 @@
+# Core framework
+Django==5.1.15
+
+# Environment / configuration
+python-decouple==3.8
+dj-database-url==3.1.2
+
+# PostgreSQL driver (architecture is Postgres-ready; SQLite is used locally via DATABASE_URL)
+psycopg2-binary==2.9.12
+
+# Inline article images (future) / avatar handling
+Pillow==12.3.0
+
+# Cache — Redis client + Django cache backend
+redis==8.1.0
+django-redis==6.0.0
+
+# Background jobs / scheduled publishing
+celery==5.6.3
+django-celery-beat==2.9.0
+
+# Rate limiting for login, password reset, user creation, and permission changes
+django-ratelimit==4.1.0
+
+# Server-side HTML sanitization for rich-text post content (XSS protection)
+nh3==0.3.6

@@ -1,0 +1,38 @@
+# Environment
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.Python
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Django
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+logs/*.log
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node / Tailwind
+node_modules/
+static/css/app.css
+static/css/app.css.map
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store

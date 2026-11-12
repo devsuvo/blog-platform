@@ -1,0 +1,10 @@
+<div class="flex flex-col items-center justify-center rounded-lg border border-dashed border-slate-300 px-6 py-16 text-center dark:border-slate-700">
+    <svg class="h-10 w-10 text-slate-300 dark:text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 13h6m-3-9a9 9 0 100 18 9 9 0 000-18z" /></svg>
+    <p class="mt-4 text-sm font-medium text-slate-900 dark:text-white">{{ title|default:"Nothing here yet" }}</p>
+    {% if description %}
+    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ description }}</p>
+    {% endif %}
+    {% if action_url %}
+    <a href="{{ action_url }}" class="btn-primary mt-4">{{ action_label|default:"Create" }}</a>
+    {% endif %}
+</div>

@@ -1,0 +1,20 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<div class="grid grid-cols-1 gap-6 lg:grid-cols-4">
+    <nav class="lg:col-span-1" aria-label="Settings sections">
+        <ul class="space-y-1">
+            {% for key, label in sections.items %}
+            <li>
+                <a href="{% url 'dashboard:settings-section' key %}"
+                   class="{% if key == active_section %}sidebar-link-active{% else %}sidebar-link{% endif %} block">
+                    {{ label }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </nav>
+    <div class="lg:col-span-3">
+        {% include "admin_panel/partials/empty_state.html" with title=active_section_label description="This section will be configurable once the corresponding feature ships." %}
+    </div>
+</div>
+{% endblock %}

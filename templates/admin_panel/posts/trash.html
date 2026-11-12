@@ -1,0 +1,56 @@
+{% extends "admin_panel/base.html" %}
+
+{% block page_actions %}
+<a href="{% url 'dashboard:post-list' %}" class="btn-ghost">Back to posts</a>
+{% endblock %}
+
+{% block content %}
+{% if page_obj.object_list %}
+<div class="card overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="w-full divide-y divide-slate-200 dark:divide-slate-800">
+            <thead class="bg-slate-50 dark:bg-slate-800/50">
+                <tr>
+                    <th class="table-header-cell">Title</th>
+                    <th class="table-header-cell">Author</th>
+                    <th class="table-header-cell">Status</th>
+                    <th class="table-header-cell">Trashed</th>
+                    <th class="table-header-cell text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                {% for post in page_obj.object_list %}
+                <tr>
+                    <td class="table-cell max-w-xs font-medium text-slate-900 dark:text-white">{{ post.title|truncatechars:60 }}</td>
+                    <td class="table-cell">{{ post.author.get_full_name|default:post.author.username }}</td>
+                    <td class="table-cell">{% include "admin_panel/partials/post_status_badge.html" with status=post.status %}</td>
+                    <td class="table-cell text-slate-500 dark:text-slate-400">{{ post.deleted_at|date:"d M Y H:i" }}</td>
+                    <td class="table-cell">
+                        <div class="flex items-center justify-end gap-3">
+                            <form method="post" action="{% url 'dashboard:post-trash-restore' post.pk %}">
+                                {% csrf_token %}
+                                <button type="submit" class="text-sm font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">Restore</button>
+                            </form>
+                            {% if can_permanently_delete %}
+                            {% with modal_id=post.pk|stringformat:"permadelete-%s" %}
+                            <button type="button" class="text-sm font-medium text-red-600 hover:text-red-500 dark:text-red-400"
+                                    onclick="document.getElementById('{{ modal_id }}').showModal()">Delete permanently</button>
+                            {% url 'dashboard:post-permanent-delete' post.pk as permadelete_url %}
+                            {% include "admin_panel/partials/confirm_modal.html" with modal_id=modal_id title="Permanently delete this post?" body="This cannot be undone — the post and its revision history will be gone for good." action_url=permadelete_url confirm_label="Delete Permanently" %}
+                            {% endwith %}
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="px-1">
+    {% include "admin_panel/partials/pagination.html" %}
+</div>
+{% else %}
+{% include "admin_panel/partials/empty_state.html" with title="Trash is empty" description="Posts you move to trash will appear here until restored or permanently deleted." %}
+{% endif %}
+{% endblock %}

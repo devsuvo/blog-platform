@@ -1,0 +1,165 @@
+{% extends "admin_panel/base.html" %}
+{% load admin_extras %}
+
+{% block page_actions %}
+<a href="{% url 'dashboard:export-posts-csv' %}" class="btn-secondary">Export CSV</a>
+{% if can_view_trash %}
+<a href="{% url 'dashboard:post-trash-list' %}" class="btn-secondary">Trash</a>
+{% endif %}
+{% if can_create %}
+<a href="{% url 'dashboard:post-create' %}" class="btn-primary">
+    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
+    New Post
+</a>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="card mb-4 p-4">
+    <form method="get" class="flex flex-wrap items-end gap-3">
+        <div class="min-w-[200px] flex-1">
+            <label for="q" class="field-label">Search</label>
+            <input type="search" id="q" name="q" value="{{ query }}" placeholder="Title, slug, or content…" class="field-input">
+        </div>
+        <div>
+            <label for="status" class="field-label">Status</label>
+            <select id="status" name="status" class="field-input">
+                <option value="">All statuses</option>
+                {% for value, label in status_choices %}
+                <option value="{{ value }}" {% if value == selected_status %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="category" class="field-label">Category</label>
+            <select id="category" name="category" class="field-input">
+                <option value="">All categories</option>
+                {% for category in categories %}
+                <option value="{{ category.pk }}" {% if category.pk|stringformat:"s" == selected_category %}selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn-secondary">Filter</button>
+        {% if query or selected_status or selected_category %}
+        <a href="{% url 'dashboard:post-list' %}" class="btn-ghost">Clear</a>
+        {% endif %}
+    </form>
+</div>
+
+{% if page_obj.object_list %}
+<div class="card overflow-hidden" x-data="{ selected: [] }">
+    {% if can_bulk_edit %}
+    <div x-show="selected.length > 0" x-cloak
+         class="flex flex-wrap items-center gap-3 border-b border-slate-200 bg-indigo-50 px-4 py-3 dark:border-slate-800 dark:bg-indigo-500/10">
+        <span class="text-sm font-medium text-indigo-700 dark:text-indigo-300" x-text="selected.length + ' selected'"></span>
+
+        <form method="post" action="{% url 'dashboard:post-bulk-action' %}" class="flex flex-wrap items-center gap-2">
+            {% csrf_token %}
+            <input type="hidden" name="post_ids" :value="selected.join(',')">
+            <button type="submit" name="action" value="publish" class="btn-secondary !px-3 !py-1.5">Publish</button>
+            <button type="submit" name="action" value="unpublish" class="btn-secondary !px-3 !py-1.5">Unpublish</button>
+            <button type="submit" name="action" value="archive" class="btn-secondary !px-3 !py-1.5">Archive</button>
+            <select name="category" class="field-input !py-1.5">
+                <option value="">Change category…</option>
+                {% for category in categories %}
+                <option value="{{ category.pk }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" name="action" value="change_category" class="btn-secondary !px-3 !py-1.5">Apply</button>
+        </form>
+
+        <button type="button" class="btn-danger !px-3 !py-1.5" @click="document.getElementById('bulk-trash-modal').showModal()">Move to Trash</button>
+    </div>
+
+    <dialog id="bulk-trash-modal" class="w-full max-w-md rounded-lg border border-slate-200 bg-white p-0 shadow-xl backdrop:bg-slate-900/50 dark:border-slate-800 dark:bg-slate-900">
+        <form method="post" action="{% url 'dashboard:post-bulk-action' %}">
+            {% csrf_token %}
+            <input type="hidden" name="post_ids" :value="selected.join(',')">
+            <input type="hidden" name="action" value="trash">
+            <div class="p-6">
+                <h2 class="text-lg font-semibold text-slate-900 dark:text-white">
+                    Move <span x-text="selected.length"></span> selected post(s) to trash?
+                </h2>
+                <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">They'll be hidden from the site and post list. This can be undone from Trash.</p>
+            </div>
+            <div class="flex justify-end gap-3 border-t border-slate-200 px-6 py-4 dark:border-slate-800">
+                <button type="button" onclick="document.getElementById('bulk-trash-modal').close()" class="btn-secondary">Cancel</button>
+                <button type="submit" class="btn-danger">Move to Trash</button>
+            </div>
+        </form>
+    </dialog>
+    {% endif %}
+
+    <div class="overflow-x-auto">
+        <table class="w-full divide-y divide-slate-200 dark:divide-slate-800">
+            <thead class="bg-slate-50 dark:bg-slate-800/50">
+                <tr>
+                    {% if can_bulk_edit %}
+                    <th class="table-header-cell w-10">
+                        <input type="checkbox" class="rounded border-slate-300"
+                               @change="selected = $event.target.checked ? [{% for post in page_obj.object_list %}{{ post.pk }}{% if not forloop.last %},{% endif %}{% endfor %}] : []"
+                               aria-label="Select all posts">
+                    </th>
+                    {% endif %}
+                    <th class="table-header-cell">Title</th>
+                    <th class="table-header-cell">Author</th>
+                    <th class="table-header-cell">Category</th>
+                    <th class="table-header-cell">Status</th>
+                    <th class="table-header-cell">Published</th>
+                    <th class="table-header-cell">Updated</th>
+                    <th class="table-header-cell">Views</th>
+                    <th class="table-header-cell text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                {% for post in page_obj.object_list %}
+                <tr>
+                    {% if can_bulk_edit %}
+                    <td class="table-cell">
+                        <input type="checkbox" class="rounded border-slate-300" value="{{ post.pk }}"
+                               :checked="selected.includes({{ post.pk }})"
+                               @change="$event.target.checked ? selected.push({{ post.pk }}) : selected = selected.filter(id => id !== {{ post.pk }})"
+                               aria-label="Select {{ post.title }}">
+                    </td>
+                    {% endif %}
+                    <td class="table-cell max-w-xs">
+                        <a href="{% url 'dashboard:post-edit' post.pk %}" class="font-medium text-slate-900 hover:text-indigo-600 dark:text-white dark:hover:text-indigo-400">
+                            {{ post.title|truncatechars:60 }}
+                        </a>
+                    </td>
+                    <td class="table-cell">{{ post.author.get_full_name|default:post.author.username }}</td>
+                    <td class="table-cell">{{ post.category.name|default:"—" }}</td>
+                    <td class="table-cell">{% include "admin_panel/partials/post_status_badge.html" with status=post.status %}</td>
+                    <td class="table-cell text-slate-500 dark:text-slate-400">{{ post.published_at|date:"d M Y"|default:"—" }}</td>
+                    <td class="table-cell text-slate-500 dark:text-slate-400">{{ post.updated_at|date:"d M Y" }}</td>
+                    <td class="table-cell text-slate-500 dark:text-slate-400">{{ post.views_count }}</td>
+                    <td class="table-cell">
+                        <div class="flex items-center justify-end gap-3">
+                            <a href="{% url 'dashboard:post-edit' post.pk %}" class="text-sm font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">Edit</a>
+                            <a href="{% url 'dashboard:post-preview' post.pk %}" target="_blank" rel="noopener" class="text-sm font-medium text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200">Preview</a>
+                            {% if post.status != "published" and request.user|can_publish_post:post %}
+                            <form method="post" action="{% url 'dashboard:post-publish' post.pk %}">
+                                {% csrf_token %}
+                                <button type="submit" class="text-sm font-medium text-green-600 hover:text-green-500 dark:text-green-400">Publish</button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="px-1">
+    {% include "admin_panel/partials/pagination.html" %}
+</div>
+{% else %}
+{% url 'dashboard:post-create' as create_url %}
+{% if can_create %}
+{% include "admin_panel/partials/empty_state.html" with title="No posts found" description="Try changing your search or filters." action_url=create_url action_label="Write your first post" %}
+{% else %}
+{% include "admin_panel/partials/empty_state.html" with title="No posts found" description="Try changing your search or filters." %}
+{% endif %}
+{% endif %}
+{% endblock %}

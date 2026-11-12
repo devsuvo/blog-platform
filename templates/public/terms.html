@@ -1,0 +1,41 @@
+{% extends "public/base.html" %}
+
+{% block content %}
+<article class="mx-auto max-w-2xl px-4 py-14 sm:px-6">
+    <h1 class="text-3xl font-bold text-slate-900 dark:text-white">Terms of Use</h1>
+    <p class="mt-2 text-sm text-slate-400">Last updated {{ current_year }}</p>
+
+    <div class="prose prose-slate mt-8 max-w-none dark:prose-invert">
+        <h2>Using this site</h2>
+        <p>
+            Content on {{ SITE_NAME }} is provided for informational and educational purposes.
+            You're welcome to read, share, and link to articles. Please don't republish full
+            articles elsewhere without permission — linking back is always appreciated.
+        </p>
+
+        <h2>No warranty</h2>
+        <p>
+            Articles reflect the author's understanding at the time of writing. Code samples
+            and technical advice are provided as-is, without warranty; test anything from this
+            site before relying on it in production.
+        </p>
+
+        <h2>Comments and contact</h2>
+        <p>
+            When commenting (once available) or contacting us, don't submit anything unlawful,
+            abusive, or that you don't have the right to share.
+        </p>
+
+        <h2>Changes</h2>
+        <p>
+            These terms may be updated from time to time. Continued use of the site after a
+            change means you accept the updated terms.
+        </p>
+
+        <h2>Contact</h2>
+        <p>
+            Questions about these terms? <a href="{% url 'public:contact' %}">Get in touch</a>.
+        </p>
+    </div>
+</article>
+{% endblock %}

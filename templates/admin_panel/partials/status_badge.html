@@ -1,0 +1,7 @@
+{% if status == "active" %}
+<span class="badge-green">Active</span>
+{% elif status == "suspended" %}
+<span class="badge-red">Suspended</span>
+{% else %}
+<span class="badge-amber">Inactive</span>
+{% endif %}

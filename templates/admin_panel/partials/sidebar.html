@@ -1,0 +1,115 @@
+{% load static %}
+<!-- Mobile backdrop -->
+<div x-show="sidebarOpen" x-cloak @click="sidebarOpen = false"
+     class="fixed inset-0 z-30 bg-slate-900/50 lg:hidden" x-transition.opacity></div>
+
+<aside
+    class="fixed inset-y-0 left-0 z-40 w-64 shrink-0 -translate-x-full border-r border-slate-200 bg-white transition-transform duration-200 ease-in-out dark:border-slate-800 dark:bg-slate-900 lg:static lg:translate-x-0"
+    :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
+    <div class="flex h-16 items-center gap-2 border-b border-slate-200 px-5 dark:border-slate-800">
+        <a href="{% url 'dashboard:index' %}" class="flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
+            <span class="flex h-8 w-8 items-center justify-center rounded-md bg-indigo-600 text-sm font-bold text-white">B</span>
+            <span>Blog Admin</span>
+        </a>
+    </div>
+
+    <nav class="flex flex-col gap-6 overflow-y-auto px-3 py-5" aria-label="Admin navigation">
+        <div>
+            <a href="{% url 'dashboard:index' %}"
+               class="{% if request.path == '/admin/' or request.resolver_match.url_name == 'dashboard' or request.resolver_match.url_name == 'index' %}sidebar-link-active{% else %}sidebar-link{% endif %}">
+                <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+                Dashboard
+            </a>
+        </div>
+
+        <div>
+            <p class="px-3 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">Content</p>
+            <div class="mt-2 space-y-1">
+                <a href="{% url 'dashboard:post-list' %}" class="{% if '/admin/posts' in request.path %}sidebar-link-active{% else %}sidebar-link{% endif %}">
+                    <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l6 6v10a2 2 0 01-2 2z" /><path stroke-linecap="round" stroke-linejoin="round" d="M9 13h6M9 17h4" /></svg>
+                    Posts
+                </a>
+                <a href="{% url 'dashboard:category-list' %}" class="{% if '/admin/categories' in request.path %}sidebar-link-active{% else %}sidebar-link{% endif %}">
+                    <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" /></svg>
+                    Categories
+                </a>
+                <a href="{% url 'dashboard:tag-list' %}" class="{% if '/admin/tags' in request.path %}sidebar-link-active{% else %}sidebar-link{% endif %}">
+                    <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M3 11l8-8h6a2 2 0 012 2v6l-8 8a2 2 0 01-2.8 0l-5.2-5.2a2 2 0 010-2.8z" /></svg>
+                    Tags
+                </a>
+            </div>
+        </div>
+
+        {% if nav_can_view_users or nav_can_view_roles %}
+        <div>
+            <p class="px-3 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">Users</p>
+            <div class="mt-2 space-y-1">
+                {% if nav_can_view_users %}
+                <a href="{% url 'dashboard:user-list' %}" class="{% if '/admin/users' in request.path %}sidebar-link-active{% else %}sidebar-link{% endif %}">
+                    <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-1.13a4 4 0 10-4-4 4 4 0 004 4zm6 0a4 4 0 10-4-4" /></svg>
+                    Users
+                </a>
+                {% endif %}
+                {% if nav_can_view_roles %}
+                <a href="{% url 'dashboard:role-list' %}" class="{% if '/admin/roles' in request.path %}sidebar-link-active{% else %}sidebar-link{% endif %}">
+                    <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15a3 3 0 100-6 3 3 0 000 6z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9c.36.24.8.36 1.51.36H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z" /></svg>
+                    Roles &amp; Permissions
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if nav_can_view_seo or nav_can_view_redirects or nav_can_view_404_logs %}
+        <div>
+            <p class="px-3 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">SEO</p>
+            <div class="mt-2 space-y-1">
+                {% if nav_can_view_seo %}
+                <a href="{% url 'dashboard:seo-dashboard' %}" class="{% if '/admin/seo' in request.path %}sidebar-link-active{% else %}sidebar-link{% endif %}">
+                    <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7" /><path stroke-linecap="round" d="M21 21l-4.35-4.35" /></svg>
+                    SEO Health
+                </a>
+                {% endif %}
+                {% if nav_can_view_redirects %}
+                <a href="{% url 'dashboard:redirect-list' %}" class="{% if '/admin/redirects' in request.path %}sidebar-link-active{% else %}sidebar-link{% endif %}">
+                    <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                    Redirects
+                </a>
+                {% endif %}
+                {% if nav_can_view_404_logs %}
+                <a href="{% url 'dashboard:not-found-log-list' %}" class="{% if '/admin/404-logs' in request.path %}sidebar-link-active{% else %}sidebar-link{% endif %}">
+                    <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-8.99 3.75h.008v.008h-.008v-.008z" /></svg>
+                    404 Monitoring
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if nav_can_view_activity_logs or nav_can_view_settings %}
+        <div>
+            <p class="px-3 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">System</p>
+            <div class="mt-2 space-y-1">
+                {% if nav_can_view_activity_logs %}
+                <a href="{% url 'dashboard:activity-log-list' %}" class="{% if '/admin/activity-logs' in request.path %}sidebar-link-active{% else %}sidebar-link{% endif %}">
+                    <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 7h6m-6 4h6" /></svg>
+                    Activity Logs
+                </a>
+                {% endif %}
+                {% if nav_can_view_settings %}
+                <a href="{% url 'dashboard:settings' %}" class="{% if '/admin/settings' in request.path %}sidebar-link-active{% else %}sidebar-link{% endif %}">
+                    <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    Settings
+                </a>
+                {% endif %}
+                {% if nav_can_view_system_status %}
+                <a href="{% url 'dashboard:system-status' %}" class="{% if '/admin/system' in request.path %}sidebar-link-active{% else %}sidebar-link{% endif %}">
+                    <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" /></svg>
+                    System Status
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </nav>
+</aside>

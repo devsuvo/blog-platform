@@ -1,0 +1,117 @@
+{% extends "admin_panel/base.html" %}
+{% block page_actions %}
+{% if can_edit %}
+<a href="{% url 'dashboard:user-edit' target_user.pk %}" class="btn-secondary">Edit</a>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+{% url 'dashboard:user-list' as users_url %}
+<div class="mb-4">
+    <a href="{{ users_url }}" class="text-sm font-medium text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200">&larr; Back to users</a>
+</div>
+
+<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+    <div class="card p-5 lg:col-span-1">
+        <div class="flex items-center gap-3">
+            {% if target_user.avatar %}
+                <img src="{{ target_user.avatar.url }}" alt="" class="h-12 w-12 rounded-full object-cover">
+            {% else %}
+                <span class="flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100 text-lg font-semibold text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300">
+                    {{ target_user.email|slice:":1"|upper }}
+                </span>
+            {% endif %}
+            <div class="min-w-0">
+                <p class="truncate font-semibold text-slate-900 dark:text-white">{{ target_user.get_full_name|default:target_user.username }}</p>
+                <p class="truncate text-sm text-slate-500 dark:text-slate-400">{{ target_user.email }}</p>
+            </div>
+        </div>
+
+        <dl class="mt-5 space-y-3 text-sm">
+            <div class="flex justify-between"><dt class="text-slate-500 dark:text-slate-400">Status</dt><dd>{% include "admin_panel/partials/status_badge.html" with status=target_user.status %}</dd></div>
+            <div class="flex justify-between"><dt class="text-slate-500 dark:text-slate-400">Role</dt><dd class="font-medium text-slate-900 dark:text-white">{{ role|default:"—" }}</dd></div>
+            <div class="flex justify-between"><dt class="text-slate-500 dark:text-slate-400">Joined</dt><dd class="text-slate-700 dark:text-slate-300">{{ target_user.date_joined|date:"d M Y" }}</dd></div>
+            <div class="flex justify-between"><dt class="text-slate-500 dark:text-slate-400">Last login</dt><dd class="text-slate-700 dark:text-slate-300">{{ target_user.last_login|date:"d M Y H:i"|default:"Never" }}</dd></div>
+        </dl>
+
+        {% if target_user.bio %}
+        <div class="mt-5 border-t border-slate-100 pt-4 dark:border-slate-800">
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Bio</p>
+            <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">{{ target_user.bio }}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="space-y-6 lg:col-span-2">
+        {% if can_edit %}
+        <div class="card p-5">
+            <h2 class="text-sm font-semibold text-slate-900 dark:text-white">Role &amp; status</h2>
+            {% if is_self %}
+            <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">You cannot change your own role or status. Ask another administrator.</p>
+            {% else %}
+            <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <form method="post" action="{% url 'dashboard:user-change-role' target_user.pk %}" class="flex items-end gap-2">
+                    {% csrf_token %}
+                    <div class="flex-1">
+                        <label for="role-select" class="field-label">Role</label>
+                        <select id="role-select" name="role" class="field-input">
+                            {% for role_name in role_choices %}
+                            <option value="{{ role_name }}" {% if role_name == role %}selected{% endif %}>{{ role_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-secondary">Update</button>
+                </form>
+                <form method="post" action="{% url 'dashboard:user-change-status' target_user.pk %}" class="flex items-end gap-2">
+                    {% csrf_token %}
+                    <div class="flex-1">
+                        <label for="status-select" class="field-label">Status</label>
+                        <select id="status-select" name="status" class="field-input">
+                            {% for value, label in status_choices %}
+                            <option value="{{ value }}" {% if value == target_user.status %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-secondary">Update</button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="card p-5">
+            <h2 class="text-sm font-semibold text-slate-900 dark:text-white">Account actions</h2>
+            <div class="mt-4 flex flex-wrap gap-3">
+                <form method="post" action="{% url 'dashboard:user-reset-password' target_user.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-secondary">Send password reset email</button>
+                </form>
+                {% if can_delete and not is_self %}
+                <button type="button" class="btn-danger" onclick="document.getElementById('delete-user-modal').showModal()">Delete user</button>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="card p-5">
+            <h2 class="text-sm font-semibold text-slate-900 dark:text-white">Recent activity</h2>
+            {% if recent_activity %}
+            <ul class="mt-3 divide-y divide-slate-100 dark:divide-slate-800">
+                {% for log in recent_activity %}
+                <li class="py-3 text-sm">
+                    <p class="text-slate-700 dark:text-slate-200">{{ log.get_action_display }}{% if log.description %} — {{ log.description }}{% endif %}</p>
+                    <p class="text-xs text-slate-400">{{ log.created_at|date:"d M Y H:i" }}</p>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">No recent activity.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% if can_delete and not is_self %}
+{% url 'dashboard:user-delete' target_user.pk as delete_url %}
+{% include "admin_panel/partials/confirm_modal.html" with modal_id="delete-user-modal" title="Delete this user?" body="This action cannot be undone. All data owned solely by this user may become orphaned." action_url=delete_url confirm_label="Delete User" %}
+{% endif %}
+{% endblock %}

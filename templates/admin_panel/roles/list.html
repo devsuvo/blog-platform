@@ -1,0 +1,14 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    {% for entry in roles %}
+    <a href="{% url 'dashboard:role-detail' entry.group.pk %}" class="card block p-5 hover:border-indigo-300 dark:hover:border-indigo-700">
+        <div class="flex items-center justify-between">
+            <h2 class="font-semibold text-slate-900 dark:text-white">{{ entry.group.name }}</h2>
+            <span class="badge-slate">{{ entry.member_count }} member{{ entry.member_count|pluralize }}</span>
+        </div>
+        <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">{{ entry.description }}</p>
+    </a>
+    {% endfor %}
+</div>
+{% endblock %}

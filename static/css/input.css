@@ -1,0 +1,110 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/typography";
+
+@source "../../templates";
+@source "../../apps";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+[x-cloak] {
+  display: none !important;
+}
+
+dialog[open] {
+  animation: dialog-in 0.15s ease-out;
+}
+
+@keyframes dialog-in {
+  from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Contact-form honeypot: off-screen (not display:none/visibility:hidden,
+   which unsophisticated bots sometimes special-case) and unreachable by
+   keyboard, so real visitors never see or tab into it. */
+.hidden-honeypot-wrap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Base component utilities that other classes below @apply on top of.
+   Tailwind v4 requires @utility (not @layer components) for a custom
+   class to itself be @apply-able elsewhere. */
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-md px-3.5 py-2 text-sm font-medium
+         transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
+         disabled:opacity-50 disabled:pointer-events-none;
+}
+
+@utility badge {
+  @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+}
+
+@utility sidebar-link {
+  @apply flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-slate-600
+         hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white;
+}
+
+@layer components {
+  .btn-primary {
+    @apply btn bg-indigo-600 text-white hover:bg-indigo-500 focus-visible:ring-indigo-600
+           dark:bg-indigo-500 dark:hover:bg-indigo-400;
+  }
+  .btn-secondary {
+    @apply btn bg-white text-slate-700 ring-1 ring-inset ring-slate-300 hover:bg-slate-50
+           focus-visible:ring-indigo-600 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-700;
+  }
+  .btn-danger {
+    @apply btn bg-red-600 text-white hover:bg-red-500 focus-visible:ring-red-600;
+  }
+  .btn-ghost {
+    @apply btn text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800;
+  }
+  .field-label {
+    @apply block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1;
+  }
+  .field-input {
+    @apply block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 ring-1 ring-inset ring-slate-300
+           placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm
+           dark:bg-slate-800 dark:text-white dark:ring-slate-700;
+  }
+  .field-error {
+    @apply mt-1 text-sm text-red-600 dark:text-red-400;
+  }
+  .field-help {
+    @apply mt-1 text-sm text-slate-500 dark:text-slate-400;
+  }
+  .card {
+    @apply rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900;
+  }
+  .badge-green {
+    @apply badge bg-green-50 text-green-700 ring-1 ring-inset ring-green-600/20 dark:bg-green-500/10 dark:text-green-400;
+  }
+  .badge-amber {
+    @apply badge bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-600/20 dark:bg-amber-500/10 dark:text-amber-400;
+  }
+  .badge-red {
+    @apply badge bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/20 dark:bg-red-500/10 dark:text-red-400;
+  }
+  .badge-slate {
+    @apply badge bg-slate-100 text-slate-600 ring-1 ring-inset ring-slate-500/20 dark:bg-slate-500/10 dark:text-slate-300;
+  }
+  .table-header-cell {
+    @apply px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400;
+  }
+  .table-cell {
+    @apply px-4 py-3 text-sm text-slate-700 dark:text-slate-200;
+  }
+  .sidebar-link-active {
+    @apply sidebar-link bg-indigo-50 text-indigo-700 hover:bg-indigo-50 hover:text-indigo-700
+           dark:bg-indigo-500/10 dark:text-indigo-400 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-400;
+  }
+}

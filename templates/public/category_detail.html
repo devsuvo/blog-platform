@@ -1,0 +1,22 @@
+{% extends "public/base.html" %}
+
+{% block content %}
+<section class="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+    <h1 class="text-3xl font-bold text-slate-900 dark:text-white">{{ category.name }}</h1>
+    {% if category.description %}
+    <p class="mt-2 max-w-2xl text-slate-500 dark:text-slate-400">{{ category.description }}</p>
+    {% endif %}
+    <p class="mt-2 text-sm text-slate-400">{{ page_obj.paginator.count }} article{{ page_obj.paginator.count|pluralize }}</p>
+
+    {% if page_obj.object_list %}
+    <div class="mt-6">
+        {% for post in page_obj.object_list %}
+        {% include "public/partials/post_card.html" %}
+        {% endfor %}
+    </div>
+    {% include "public/partials/pagination.html" %}
+    {% else %}
+    <p class="mt-10 text-slate-500 dark:text-slate-400">No articles in this category yet.</p>
+    {% endif %}
+</section>
+{% endblock %}

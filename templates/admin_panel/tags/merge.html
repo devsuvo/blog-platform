@@ -1,0 +1,29 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<div class="card max-w-xl p-6">
+    <p class="field-help">Posts tagged with any source tag are re-tagged with the target tag, then the source tags are deleted. This can't be undone.</p>
+    <form method="post" novalidate class="mt-4">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+        <div class="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-700 dark:bg-red-500/10 dark:text-red-400">{{ form.non_field_errors }}</div>
+        {% endif %}
+        <div class="space-y-4">
+            <div>
+                <label for="{{ form.source_tags.id_for_label }}" class="field-label">Source tags (merge away)</label>
+                {{ form.source_tags }}
+                {% if form.source_tags.errors %}<p class="field-error">{{ form.source_tags.errors|join:" " }}</p>{% endif %}
+                <p class="field-help">Ctrl/Cmd-click to select more than one, e.g. "python" and "Python3".</p>
+            </div>
+            <div>
+                <label for="{{ form.target_tag.id_for_label }}" class="field-label">Target tag (keep)</label>
+                {{ form.target_tag }}
+                {% if form.target_tag.errors %}<p class="field-error">{{ form.target_tag.errors|join:" " }}</p>{% endif %}
+            </div>
+        </div>
+        <div class="mt-6 flex justify-end gap-3 border-t border-slate-100 pt-4 dark:border-slate-800">
+            <a href="{% url 'dashboard:tag-list' %}" class="btn-secondary">Cancel</a>
+            <button type="submit" class="btn-primary">Merge Tags</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

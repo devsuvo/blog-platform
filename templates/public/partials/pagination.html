@@ -1,0 +1,30 @@
+{% load admin_extras public_extras %}
+{% if page_obj.paginator.num_pages > 1 %}
+<nav class="mt-12 flex items-center justify-between" aria-label="Pagination">
+    {% if page_obj.has_previous %}
+        <a href="?{% query_string page=page_obj.previous_page_number %}" class="btn-secondary">&larr; Previous</a>
+    {% else %}
+        <span class="btn-secondary pointer-events-none opacity-40">&larr; Previous</span>
+    {% endif %}
+
+    <div class="hidden items-center gap-1 sm:flex">
+        {% elided_page_range page_obj.paginator page_obj.number as elided_range %}
+        {% for number in elided_range %}
+            {% if number == page_obj.paginator.ELLIPSIS %}
+                <span class="px-2 text-slate-400">&hellip;</span>
+            {% elif number == page_obj.number %}
+                <span aria-current="page" class="flex h-9 w-9 items-center justify-center rounded-md bg-indigo-600 text-sm font-medium text-white">{{ number }}</span>
+            {% else %}
+                <a href="?{% query_string page=number %}" class="flex h-9 w-9 items-center justify-center rounded-md text-sm font-medium text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">{{ number }}</a>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <p class="text-sm text-slate-500 sm:hidden dark:text-slate-400">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</p>
+
+    {% if page_obj.has_next %}
+        <a href="?{% query_string page=page_obj.next_page_number %}" class="btn-secondary">Next &rarr;</a>
+    {% else %}
+        <span class="btn-secondary pointer-events-none opacity-40">Next &rarr;</span>
+    {% endif %}
+</nav>
+{% endif %}

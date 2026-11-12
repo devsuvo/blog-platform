@@ -1,0 +1,126 @@
+{% extends "admin_panel/base.html" %}
+{% load admin_extras %}
+
+{% block page_actions %}
+<a href="{% url 'dashboard:export-users-csv' %}" class="btn-secondary">Export CSV</a>
+{% if can_create %}
+<a href="{% url 'dashboard:user-create' %}" class="btn-primary">
+    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
+    Create User
+</a>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="card mb-4 p-4">
+    <form method="get" class="flex flex-wrap items-end gap-3">
+        <div class="min-w-[200px] flex-1">
+            <label for="q" class="field-label">Search</label>
+            <input type="search" id="q" name="q" value="{{ query }}" placeholder="Name or email…" class="field-input">
+        </div>
+        <div>
+            <label for="role" class="field-label">Role</label>
+            <select id="role" name="role" class="field-input">
+                <option value="">All roles</option>
+                {% for role_name in role_choices %}
+                <option value="{{ role_name }}" {% if role_name == selected_role %}selected{% endif %}>{{ role_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="status" class="field-label">Status</label>
+            <select id="status" name="status" class="field-input">
+                <option value="">All statuses</option>
+                {% for value, label in status_choices %}
+                <option value="{{ value }}" {% if value == selected_status %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn-secondary">Filter</button>
+        {% if query or selected_role or selected_status %}
+        <a href="{% url 'dashboard:user-list' %}" class="btn-ghost">Clear</a>
+        {% endif %}
+    </form>
+</div>
+
+{% if page_obj.object_list %}
+<div class="card overflow-hidden" x-data="{ selected: [] }">
+    {% if can_edit %}
+    <form method="post" action="{% url 'dashboard:user-bulk-action' %}"
+          x-show="selected.length > 0" x-cloak
+          class="flex flex-wrap items-center gap-3 border-b border-slate-200 bg-indigo-50 px-4 py-3 dark:border-slate-800 dark:bg-indigo-500/10">
+        {% csrf_token %}
+        <input type="hidden" name="user_ids" :value="selected.join(',')">
+        <span class="text-sm font-medium text-indigo-700 dark:text-indigo-300" x-text="selected.length + ' selected'"></span>
+        <button type="submit" name="action" value="activate" class="btn-secondary !px-3 !py-1.5">Activate</button>
+        <button type="submit" name="action" value="deactivate" class="btn-secondary !px-3 !py-1.5">Deactivate</button>
+        <button type="submit" name="action" value="suspend" class="btn-secondary !px-3 !py-1.5">Suspend</button>
+    </form>
+    {% endif %}
+
+    <div class="overflow-x-auto">
+        <table class="w-full divide-y divide-slate-200 dark:divide-slate-800">
+            <thead class="bg-slate-50 dark:bg-slate-800/50">
+                <tr>
+                    {% if can_edit %}
+                    <th class="table-header-cell w-10">
+                        <input type="checkbox" class="rounded border-slate-300"
+                               @change="selected = $event.target.checked ? [{% for user in page_obj.object_list %}{{ user.pk }}{% if not forloop.last %},{% endif %}{% endfor %}] : []"
+                               aria-label="Select all users">
+                    </th>
+                    {% endif %}
+                    <th class="table-header-cell">Name</th>
+                    <th class="table-header-cell">Email</th>
+                    <th class="table-header-cell">Role</th>
+                    <th class="table-header-cell">Status</th>
+                    <th class="table-header-cell">Joined</th>
+                    <th class="table-header-cell">Last login</th>
+                    <th class="table-header-cell text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                {% for user in page_obj.object_list %}
+                <tr>
+                    {% if can_edit %}
+                    <td class="table-cell">
+                        <input type="checkbox" class="rounded border-slate-300" value="{{ user.pk }}"
+                               :checked="selected.includes({{ user.pk }})"
+                               @change="$event.target.checked ? selected.push({{ user.pk }}) : selected = selected.filter(id => id !== {{ user.pk }})"
+                               aria-label="Select {{ user.email }}">
+                    </td>
+                    {% endif %}
+                    <td class="table-cell font-medium text-slate-900 dark:text-white">
+                        <a href="{% url 'dashboard:user-detail' user.pk %}" class="hover:text-indigo-600 dark:hover:text-indigo-400">
+                            {{ user.get_full_name|default:user.username }}
+                        </a>
+                    </td>
+                    <td class="table-cell">{{ user.email }}</td>
+                    <td class="table-cell">
+                        {% with role=user.groups.all|first %}
+                            {% if role %}<span class="badge-slate">{{ role.name }}</span>{% else %}<span class="text-slate-400">—</span>{% endif %}
+                        {% endwith %}
+                    </td>
+                    <td class="table-cell">{% include "admin_panel/partials/status_badge.html" with status=user.status %}</td>
+                    <td class="table-cell text-slate-500 dark:text-slate-400">{{ user.date_joined|date:"d M Y" }}</td>
+                    <td class="table-cell text-slate-500 dark:text-slate-400">{{ user.last_login|date:"d M Y"|default:"Never" }}</td>
+                    <td class="table-cell text-right">
+                        <a href="{% url 'dashboard:user-detail' user.pk %}" class="text-sm font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="px-1">
+    {% include "admin_panel/partials/pagination.html" %}
+</div>
+{% else %}
+{% url 'dashboard:user-create' as create_url %}
+{% if can_create %}
+{% include "admin_panel/partials/empty_state.html" with title="No users found" description="Try changing your search or filters." action_url=create_url action_label="Create User" %}
+{% else %}
+{% include "admin_panel/partials/empty_state.html" with title="No users found" description="Try changing your search or filters." %}
+{% endif %}
+{% endif %}
+{% endblock %}

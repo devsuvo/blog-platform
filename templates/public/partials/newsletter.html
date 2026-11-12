@@ -1,0 +1,12 @@
+{% comment %}
+No newsletter backend exists in this project — this is a visual CTA only,
+routed to the existing Contact form rather than faking a working subscribe
+flow. Swap the form/button for a real subscribe endpoint if one is added.
+{% endcomment %}
+<div class="rounded-xl border border-slate-200 bg-slate-50/60 p-6 text-center dark:border-slate-800 dark:bg-slate-900/40">
+    <h2 class="text-lg font-bold text-slate-900 dark:text-white">Stay in the Loop</h2>
+    <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
+        Get new Python, Django and web development articles delivered without the noise.
+    </p>
+    <a href="{% url 'public:contact' %}" class="btn-primary mt-4 w-full sm:w-auto">Subscribe</a>
+</div>

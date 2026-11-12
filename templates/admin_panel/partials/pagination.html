@@ -1,0 +1,20 @@
+{% load admin_extras %}
+{% if page_obj.paginator.num_pages > 1 %}
+<nav class="mt-4 flex items-center justify-between border-t border-slate-200 pt-4 dark:border-slate-800" aria-label="Pagination">
+    <p class="text-sm text-slate-500 dark:text-slate-400">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} · {{ page_obj.paginator.count }} total
+    </p>
+    <div class="flex gap-2">
+        {% if page_obj.has_previous %}
+            <a href="?{% query_string page=page_obj.previous_page_number %}" class="btn-secondary !px-3 !py-1.5">Previous</a>
+        {% else %}
+            <span class="btn-secondary !px-3 !py-1.5 opacity-50 pointer-events-none">Previous</span>
+        {% endif %}
+        {% if page_obj.has_next %}
+            <a href="?{% query_string page=page_obj.next_page_number %}" class="btn-secondary !px-3 !py-1.5">Next</a>
+        {% else %}
+            <span class="btn-secondary !px-3 !py-1.5 opacity-50 pointer-events-none">Next</span>
+        {% endif %}
+    </div>
+</nav>
+{% endif %}

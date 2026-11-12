@@ -1,0 +1,82 @@
+{% extends "admin_panel/base.html" %}
+
+{% block content %}
+<div class="card max-w-2xl p-6">
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+        <div class="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-700 dark:bg-red-500/10 dark:text-red-400">
+            {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+                <label for="{{ form.first_name.id_for_label }}" class="field-label">First name</label>
+                {{ form.first_name }}
+                {% if form.first_name.errors %}<p class="field-error">{{ form.first_name.errors|join:" " }}</p>{% endif %}
+            </div>
+            <div>
+                <label for="{{ form.last_name.id_for_label }}" class="field-label">Last name</label>
+                {{ form.last_name }}
+                {% if form.last_name.errors %}<p class="field-error">{{ form.last_name.errors|join:" " }}</p>{% endif %}
+            </div>
+            <div>
+                <label for="{{ form.email.id_for_label }}" class="field-label">Email</label>
+                {{ form.email }}
+                {% if form.email.errors %}<p class="field-error">{{ form.email.errors|join:" " }}</p>{% endif %}
+            </div>
+            <div>
+                <label for="{{ form.username.id_for_label }}" class="field-label">Username</label>
+                {{ form.username }}
+                {% if form.username.errors %}<p class="field-error">{{ form.username.errors|join:" " }}</p>{% endif %}
+                <p class="field-help">Used for the public author URL.</p>
+            </div>
+
+            {% if is_create %}
+            <div>
+                <label for="{{ form.role.id_for_label }}" class="field-label">Role</label>
+                {{ form.role }}
+                {% if form.role.errors %}<p class="field-error">{{ form.role.errors|join:" " }}</p>{% endif %}
+            </div>
+            <div>
+                <label for="{{ form.status.id_for_label }}" class="field-label">Status</label>
+                {{ form.status }}
+                {% if form.status.errors %}<p class="field-error">{{ form.status.errors|join:" " }}</p>{% endif %}
+            </div>
+            <div>
+                <label for="{{ form.password1.id_for_label }}" class="field-label">Password</label>
+                {{ form.password1 }}
+                {% if form.password1.errors %}<p class="field-error">{{ form.password1.errors|join:" " }}</p>{% endif %}
+            </div>
+            <div>
+                <label for="{{ form.password2.id_for_label }}" class="field-label">Confirm password</label>
+                {{ form.password2 }}
+                {% if form.password2.errors %}<p class="field-error">{{ form.password2.errors|join:" " }}</p>{% endif %}
+            </div>
+            {% endif %}
+
+            <div class="sm:col-span-2">
+                <label for="{{ form.bio.id_for_label }}" class="field-label">Bio</label>
+                {{ form.bio }}
+                {% if form.bio.errors %}<p class="field-error">{{ form.bio.errors|join:" " }}</p>{% endif %}
+            </div>
+            <div class="sm:col-span-2">
+                <label for="{{ form.avatar.id_for_label }}" class="field-label">Avatar</label>
+                {{ form.avatar }}
+                {% if form.avatar.errors %}<p class="field-error">{{ form.avatar.errors|join:" " }}</p>{% endif %}
+                <p class="field-help">JPG, PNG or WEBP, up to 2MB.</p>
+            </div>
+        </div>
+
+        <div class="mt-6 flex justify-end gap-3 border-t border-slate-100 pt-4 dark:border-slate-800">
+            {% if target_user %}
+            <a href="{% url 'dashboard:user-detail' target_user.pk %}" class="btn-secondary">Cancel</a>
+            {% else %}
+            <a href="{% url 'dashboard:user-list' %}" class="btn-secondary">Cancel</a>
+            {% endif %}
+            <button type="submit" class="btn-primary">{% if is_create %}Create user{% else %}Save changes{% endif %}</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

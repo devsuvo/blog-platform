@@ -1,0 +1,23 @@
+{
+  "name": "blog-post",
+  "version": "1.0.0",
+  "description": "A professional, SEO-first, multi-user blogging platform. This is the **Step 1 foundation**: project architecture, custom user model, authentication, and security baseline. Public blog pages, the post editor, categories/tags UI, SEO engine, search, and analytics are built in later steps.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "build": "tailwindcss -i ./static/css/input.css -o ./static/css/app.css --minify",
+    "watch": "tailwindcss -i ./static/css/input.css -o ./static/css/app.css --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.3",
+    "@tailwindcss/forms": "^0.5.11",
+    "@tailwindcss/typography": "^0.5.20",
+    "tailwindcss": "^4.3.3"
+  }
+}

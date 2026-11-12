@@ -1,0 +1,34 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<div class="card max-w-xl p-6">
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+        <div class="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-700 dark:bg-red-500/10 dark:text-red-400">{{ form.non_field_errors }}</div>
+        {% endif %}
+        <div class="space-y-4">
+            <div>
+                <label for="{{ form.old_path.id_for_label }}" class="field-label">Old URL</label>
+                {{ form.old_path }}
+                {% if form.old_path.errors %}<p class="field-error">{{ form.old_path.errors|join:" " }}</p>{% endif %}
+            </div>
+            <div>
+                <label for="{{ form.new_path.id_for_label }}" class="field-label">New URL</label>
+                {{ form.new_path }}
+                {% if form.new_path.errors %}<p class="field-error">{{ form.new_path.errors|join:" " }}</p>{% endif %}
+                <p class="field-help">A path on this site (e.g. /blog/new-slug/) or a full https:// URL.</p>
+            </div>
+            <div>
+                <label for="{{ form.status_code.id_for_label }}" class="field-label">Redirect type</label>
+                {{ form.status_code }}
+                {% if form.status_code.errors %}<p class="field-error">{{ form.status_code.errors|join:" " }}</p>{% endif %}
+                <p class="field-help">301 Permanent for a page that's moved for good; 302 Temporary otherwise.</p>
+            </div>
+        </div>
+        <div class="mt-6 flex justify-end gap-3 border-t border-slate-100 pt-4 dark:border-slate-800">
+            <a href="{% url 'dashboard:redirect-list' %}" class="btn-secondary">Cancel</a>
+            <button type="submit" class="btn-primary">{% if is_create %}Create redirect{% else %}Save changes{% endif %}</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

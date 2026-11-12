@@ -1,0 +1,55 @@
+{% extends "admin_panel/base.html" %}
+{% block page_actions %}
+{% if can_edit and can_delete %}
+<a href="{% url 'dashboard:tag-merge' %}" class="btn-secondary">Merge Tags</a>
+{% endif %}
+{% if can_create %}
+<a href="{% url 'dashboard:tag-create' %}" class="btn-primary">New Tag</a>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+{% if tags %}
+<div class="card overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="w-full divide-y divide-slate-200 dark:divide-slate-800">
+            <thead class="bg-slate-50 dark:bg-slate-800/50">
+                <tr>
+                    <th class="table-header-cell">Name</th>
+                    <th class="table-header-cell">Slug</th>
+                    <th class="table-header-cell">Posts</th>
+                    <th class="table-header-cell text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                {% for tag in tags %}
+                <tr>
+                    <td class="table-cell font-medium text-slate-900 dark:text-white">{{ tag.name }}</td>
+                    <td class="table-cell text-slate-500 dark:text-slate-400">{{ tag.slug }}</td>
+                    <td class="table-cell">{{ tag.posts.count }}</td>
+                    <td class="table-cell text-right">
+                        {% if can_edit %}<a href="{% url 'dashboard:tag-edit' tag.pk %}" class="text-sm font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">Edit</a>{% endif %}
+                        {% if can_delete %}
+                        <button type="button" class="ml-3 text-sm font-medium text-red-600 hover:text-red-500 dark:text-red-400"
+                                onclick="document.getElementById('delete-tag-{{ tag.pk }}').showModal()">Delete</button>
+                        {% url 'dashboard:tag-delete' tag.pk as delete_url %}
+                        {% with pk_str=tag.pk|stringformat:"s" %}{% with modal_id="delete-tag-"|add:pk_str %}
+                        {% include "admin_panel/partials/confirm_modal.html" with modal_id=modal_id title="Delete this tag?" body="It will be removed from any posts using it." action_url=delete_url confirm_label="Delete Tag" %}
+                        {% endwith %}{% endwith %}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+{% url 'dashboard:tag-create' as create_url %}
+{% if can_create %}
+{% include "admin_panel/partials/empty_state.html" with title="No tags yet" action_url=create_url action_label="Create Tag" %}
+{% else %}
+{% include "admin_panel/partials/empty_state.html" with title="No tags yet" %}
+{% endif %}
+{% endif %}
+{% endblock %}

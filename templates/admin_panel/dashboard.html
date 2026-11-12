@@ -1,0 +1,139 @@
+{% extends "admin_panel/base.html" %}
+{% load admin_extras %}
+
+{% block content %}
+<div class="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+    <div class="card p-4">
+        <p class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Published</p>
+        <p class="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">{{ stats.published_posts }}</p>
+    </div>
+    <div class="card p-4">
+        <p class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Drafts</p>
+        <p class="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">{{ stats.draft_posts }}</p>
+    </div>
+    <div class="card p-4">
+        <p class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Scheduled</p>
+        <p class="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">{{ stats.scheduled_posts }}</p>
+    </div>
+    <div class="card p-4">
+        <p class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Archived</p>
+        <p class="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">{{ stats.archived_posts }}</p>
+    </div>
+</div>
+
+<div class="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+    <div class="card p-4">
+        <p class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Authors</p>
+        <p class="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">{{ stats.total_authors }}</p>
+    </div>
+    <div class="card p-4">
+        <p class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Categories</p>
+        <p class="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">{{ stats.total_categories }}</p>
+    </div>
+    <div class="card p-4">
+        <p class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Tags</p>
+        <p class="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">{{ stats.total_tags }}</p>
+    </div>
+    <div class="card p-4">
+        <p class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Total Views</p>
+        <p class="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">{{ stats.total_views }}</p>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+    <div class="card p-5 lg:col-span-1">
+        <h2 class="text-sm font-semibold text-slate-900 dark:text-white">Quick actions</h2>
+        <div class="mt-4 flex flex-col gap-2">
+            {% if can_create_post %}
+            <a href="{% url 'dashboard:post-create' %}" class="btn-primary justify-start">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
+                New Post
+            </a>
+            {% endif %}
+            <a href="{% url 'dashboard:post-list' %}" class="btn-secondary justify-start">Manage Posts</a>
+            {% if perms.blog.view_category %}<a href="{% url 'dashboard:category-list' %}" class="btn-secondary justify-start">Categories</a>{% endif %}
+            {% if perms.blog.view_tag %}<a href="{% url 'dashboard:tag-list' %}" class="btn-secondary justify-start">Tags</a>{% endif %}
+            {% if nav_can_view_users %}
+            <a href="{% url 'dashboard:user-create' %}" class="btn-secondary justify-start">Create User</a>
+            {% endif %}
+            {% if nav_can_view_seo %}
+            <a href="{% url 'dashboard:seo-dashboard' %}" class="btn-secondary justify-start">SEO Health</a>
+            {% endif %}
+            {% if nav_can_view_settings %}
+            <a href="{% url 'dashboard:settings' %}" class="btn-secondary justify-start">Settings</a>
+            {% endif %}
+        </div>
+
+        {% if stats.top_posts %}
+        <h2 class="mt-6 text-sm font-semibold text-slate-900 dark:text-white">Top posts</h2>
+        <ol class="mt-3 space-y-2">
+            {% for post in stats.top_posts %}
+            <li class="flex items-center justify-between gap-2 text-sm">
+                <a href="{% url 'dashboard:post-edit' post.pk %}" class="min-w-0 truncate text-slate-700 hover:text-indigo-600 dark:text-slate-200 dark:hover:text-indigo-400">
+                    {{ forloop.counter }}. {{ post.title|truncatechars:40 }}
+                </a>
+                <span class="shrink-0 text-xs text-slate-400">{{ post.views_count }} views</span>
+            </li>
+            {% endfor %}
+        </ol>
+        {% endif %}
+    </div>
+
+    <div class="card p-5 lg:col-span-2">
+        <div class="flex items-center justify-between">
+            <h2 class="text-sm font-semibold text-slate-900 dark:text-white">Recent posts</h2>
+            <a href="{% url 'dashboard:post-list' %}" class="text-sm font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">View all</a>
+        </div>
+        <div class="mt-4">
+            {% if stats.recent_posts %}
+            <ul class="divide-y divide-slate-100 dark:divide-slate-800">
+                {% for post in stats.recent_posts %}
+                <li class="flex items-center justify-between gap-3 py-3">
+                    <div class="min-w-0">
+                        <a href="{% url 'dashboard:post-edit' post.pk %}" class="truncate text-sm font-medium text-slate-900 hover:text-indigo-600 dark:text-white dark:hover:text-indigo-400">
+                            {{ post.title|truncatechars:60 }}
+                        </a>
+                        <p class="text-xs text-slate-400">{{ post.author.get_full_name|default:post.author.username }}</p>
+                    </div>
+                    <div class="flex shrink-0 items-center gap-3">
+                        {% include "admin_panel/partials/post_status_badge.html" with status=post.status %}
+                        <span class="text-xs text-slate-400 dark:text-slate-500">{{ post.created_at|timesince }} ago</span>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            {% url 'dashboard:post-create' as create_url %}
+            {% include "admin_panel/partials/empty_state.html" with title="No posts yet" description="Create your first article." action_url=create_url action_label="+ Create Post" %}
+            {% endif %}
+        </div>
+
+        <div class="mt-6 flex items-center justify-between">
+            <h2 class="text-sm font-semibold text-slate-900 dark:text-white">Recent activity</h2>
+            {% if nav_can_view_activity_logs %}
+            <a href="{% url 'dashboard:activity-log-list' %}" class="text-sm font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">View all</a>
+            {% endif %}
+        </div>
+        <div class="mt-4">
+            {% if recent_activity %}
+            <ul class="divide-y divide-slate-100 dark:divide-slate-800">
+                {% for log in recent_activity %}
+                <li class="flex items-center justify-between gap-3 py-3">
+                    <div class="min-w-0">
+                        <p class="truncate text-sm text-slate-700 dark:text-slate-200">
+                            <span class="font-medium text-slate-900 dark:text-white">{{ log.actor|default:"System" }}</span>
+                            {{ log.get_action_display|lower }}
+                            {% if log.description %}<span class="text-slate-500 dark:text-slate-400">— {{ log.description }}</span>{% endif %}
+                        </p>
+                    </div>
+                    <span class="shrink-0 text-xs text-slate-400 dark:text-slate-500">{{ log.created_at|timesince }} ago</span>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="py-8 text-center text-sm text-slate-500 dark:text-slate-400">No recent activity.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

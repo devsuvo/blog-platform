@@ -1,0 +1,76 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+    <div class="card p-4">
+        <p class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Published Posts</p>
+        <p class="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">{{ health.published_posts }}</p>
+    </div>
+    <div class="card p-4">
+        <p class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Indexed Posts</p>
+        <p class="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">{{ health.indexed_posts }}</p>
+    </div>
+    <div class="card p-4">
+        <p class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Missing SEO Title</p>
+        <p class="mt-2 text-2xl font-semibold {% if health.missing_seo_title %}text-amber-600 dark:text-amber-400{% else %}text-slate-900 dark:text-white{% endif %}">{{ health.missing_seo_title }}</p>
+    </div>
+    <div class="card p-4">
+        <p class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Missing Description</p>
+        <p class="mt-2 text-2xl font-semibold {% if health.missing_meta_description %}text-amber-600 dark:text-amber-400{% else %}text-slate-900 dark:text-white{% endif %}">{{ health.missing_meta_description }}</p>
+    </div>
+    <div class="card p-4">
+        <p class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Missing Category</p>
+        <p class="mt-2 text-2xl font-semibold {% if health.missing_category %}text-amber-600 dark:text-amber-400{% else %}text-slate-900 dark:text-white{% endif %}">{{ health.missing_category }}</p>
+    </div>
+    <div class="card p-4">
+        <p class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Empty Categories</p>
+        <p class="mt-2 text-2xl font-semibold {% if health.empty_categories %}text-amber-600 dark:text-amber-400{% else %}text-slate-900 dark:text-white{% endif %}">{{ health.empty_categories }}</p>
+    </div>
+    <div class="card p-4">
+        <p class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Empty Tags</p>
+        <p class="mt-2 text-2xl font-semibold {% if health.empty_tags %}text-amber-600 dark:text-amber-400{% else %}text-slate-900 dark:text-white{% endif %}">{{ health.empty_tags }}</p>
+    </div>
+    <div class="card p-4">
+        <p class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Redirects</p>
+        <p class="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">{{ health.redirects_total }}</p>
+    </div>
+    <div class="card p-4">
+        <p class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Broken Redirects</p>
+        <p class="mt-2 text-2xl font-semibold {% if health.redirects_broken %}text-red-600 dark:text-red-400{% else %}text-slate-900 dark:text-white{% endif %}">{{ health.redirects_broken }}</p>
+    </div>
+</div>
+
+{% if health.broken_redirects %}
+<div class="card mt-6 p-5">
+    <h2 class="text-sm font-semibold text-slate-900 dark:text-white">Broken Redirects</h2>
+    <ul class="mt-3 divide-y divide-slate-100 text-sm dark:divide-slate-800">
+        {% for entry in health.broken_redirects %}
+        <li class="flex items-center justify-between py-2">
+            <span class="font-mono text-xs text-slate-600 dark:text-slate-300">{{ entry.old_path }} &rarr; {{ entry.new_path }}</span>
+            <a href="{% url 'dashboard:redirect-edit' entry.pk %}" class="text-sm font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">Fix</a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+{% if health.duplicate_slug_groups %}
+<div class="card mt-6 p-5">
+    <h2 class="text-sm font-semibold text-slate-900 dark:text-white">Potential Duplicate Slugs</h2>
+    <p class="field-help">Posts whose slugs share a base title — worth a quick check that they're not accidental duplicates.</p>
+    <ul class="mt-3 space-y-1 text-sm">
+        {% for base, slugs in health.duplicate_slug_groups.items %}
+        <li class="text-slate-600 dark:text-slate-300">
+            <span class="font-medium text-slate-900 dark:text-white">{{ base }}</span>:
+            {% for slug in slugs %}<span class="font-mono text-xs">{{ slug }}</span>{% if not forloop.last %}, {% endif %}{% endfor %}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+{% if not health.broken_redirects and not health.duplicate_slug_groups and not health.missing_seo_title and not health.missing_meta_description %}
+<div class="mt-6">
+    {% include "admin_panel/partials/empty_state.html" with title="No issues found" description="SEO health looks good — nothing needs attention right now." %}
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,9 @@
+{% if status == "published" %}
+<span class="badge-green">Published</span>
+{% elif status == "scheduled" %}
+<span class="badge-amber">Scheduled</span>
+{% elif status == "archived" %}
+<span class="badge-slate">Archived</span>
+{% else %}
+<span class="badge-slate">Draft</span>
+{% endif %}

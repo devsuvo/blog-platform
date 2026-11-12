@@ -1,0 +1,20 @@
+{% if breadcrumbs %}
+<nav aria-label="Breadcrumb" class="mx-auto max-w-3xl px-4 pt-8 sm:px-6">
+    <ol class="flex flex-wrap items-center gap-1 text-sm text-slate-500 dark:text-slate-400">
+        <li><a href="{% url 'public:home' %}" class="hover:text-slate-800 dark:hover:text-slate-200">Home</a></li>
+        {% for label, url in breadcrumbs %}
+            <li aria-hidden="true">/</li>
+            <li>
+                {% if url %}
+                    <a href="{{ url }}" class="hover:text-slate-800 dark:hover:text-slate-200">{{ label }}</a>
+                {% else %}
+                    <span class="text-slate-700 dark:text-slate-200" aria-current="page">{{ label }}</span>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ol>
+</nav>
+{% if breadcrumb_ld %}
+<script type="application/ld+json">{{ breadcrumb_ld }}</script>
+{% endif %}
+{% endif %}
